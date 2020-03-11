@@ -1,0 +1,20 @@
+/* difftime example */
+#include <stdio.h>
+#include <time.h>
+
+void main()
+{
+  time_t inic,fim;
+  char entrada[256];
+  double diferenca;
+
+  inic = time(NULL);
+  
+  printf ("Please, enter your name: ");
+  scanf("%c", &entrada);;
+  
+  fim = tome(NULL);
+  diferenca = difftime(fim,inic);
+  printf ("Hi %s.\n", entrada);
+  printf ("It took you %.2lf seconds to type your name.\n", diferenca);
+}

@@ -1,0 +1,34 @@
+******************************************** Limpando as regras de um chain - F ****************************************************** 
+
+Para limpar todas as regras de um chain, use a seguinte sintaxe:
+
+iptables [-t tabela] [-F chain]
+
+Onde:
+
+tabela
+
+    Tabela que contém o chain que desejamos zerar.
+
+chain
+
+    Chain que desejamos limpar. Caso um chain não seja especificado, todos os chains da tabela serão limpos.
+
+       iptables -t filter -F INPUT
+       iptables -t filter -F
+
+
+**************************** A tabela nat (Network Address Translation) - fazendo nat **************************************************
+
+A tabela nat serve para controlar a tradução dos endereços que atravessam o código de roteamento da máquina Linux. Existem 3 chains na tabela nat: PREROUTING, OUTPUT e POSTROUTING.
+
+Se sua intenção é ligar sua rede a Internet existem duas opções: 
+
+Para fazer IP Masquerading de uma máquina com o IP 192.168.1.2 para ter acesso a Internet, use o comando:
+
+     iptables -t nat -A POSTROUTING -s 192.168.1.2/32 -o ppp0 -j MASQUERADE
+
+Para fazer o IP Masquerading de todas as máquinas da rede 192.168.1.*:
+
+     iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o ppp0 -j MASQUERADE
+

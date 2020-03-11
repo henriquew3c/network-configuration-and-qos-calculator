@@ -1,0 +1,181 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+/* Variaveis globais */
+FILE *fp;
+char c;
+char tempo[45];
+float t1;
+float t2;
+int i;
+float atraso = 0;
+int perda, resul_perda = 0;
+int total, qtd = 0, v;
+float jitter1 =0, jitter2=0;
+float resul_jitter=0, total_jitter=0;
+float QOS = 0;
+float m_jitter = 0.0, m_atraso = 0.0, m_vazao = 0.0, m_perda = 0.0; 
+
+/*FUNÇÕES*/
+float func_atraso();
+float func_vazao();
+float func_perda();
+float func_jitter();
+
+/*FUNÇÃO PRINCIPAL*/
+
+int main()
+{
+	int i;	
+	int amostra, t_amostra;
+	char ip[16];
+  
+ 	printf("Digite o tamanho da amostra base de coleta: ");
+ 	scanf("%d",&amostra);
+ 
+ 
+ 	printf("Digite o numero de coletas da amostra: ");
+ 	scanf("%d",&t_amostra);
+ 	
+ 	//for(i = 0 ; i < 16 ; i++)
+ 	//{
+ 		printf("Digite o endereço ip de origem: ");
+ 		scanf("%c",&ip[i]);
+	//} 
+
+ 	for(i = 0; i < t_amostra ; i++) // faz o laço para o valor pedido para que seja executado o tamanho da amostra completa, neste caso, 1000
+	{ 
+		atraso = 0;
+		resul_perda = 0;
+		qtd = 0;
+		jitter1 = 0 ;
+ 		jitter2 = 0;
+		resul_jitter = 0;
+		total_jitter = 0;     
+		printf("Executando\n");
+	       
+		system("ping -c amostra -i 0.001 ip | tee perda.txt | grep ttl |cut -d '=' -f4 | cut -d ' ' -f1 > atraso_jitter");
+    
+	}  
+	m_jitter/=t_amostra;
+	m_atraso/=t_amostra;
+	m_perda/=t_amostra;
+
+
+	printf("TESTES CONCLUIDOS COM SUCESSO!\n");
+	printf("\nIP de Origem: %s.\n", ip);
+	printf("\nTamanho da amostra base: %d.\n", amostra);
+	printf("\nNumero de coletas da amostra: %d.\n", t_amostra);
+
+	printf("RESULTADO FINAL:\n");
+	printf("Jitter: %.3f.\n", m_jitter);
+	printf("Atraso: %.3f.\n", m_atraso);
+	printf("Perda: %.3f.\n", m_perda);
+	exit(0);
+}
+
+float func_atraso()
+{
+  fp=fopen("atraso_jitter","r");
+        //fgetc, ler caracter por caracter
+	 c = fgetc(fp);
+	// EOF final do arquivo
+         while(c!= EOF)
+         {
+               while(c!='\n')
+                {
+                        tempo[i] = c;
+                        i++;
+                        c = fgetc(fp);
+                }
+                tempo[i] = '\0';
+
+		// converte texto para números
+                t2 = atof(tempo);
+                t1 = t2;
+                
+                atraso = atraso+t1;
+                c = fgetc(fp);
+
+                i = 0;
+         }
+
+		m_atraso += atraso;
+        printf("Atraso Fim a Fim: %.3f\n",atraso);
+        fclose(fp);   
+     
+		return atraso/2;
+}
+
+float func_perda()
+{
+  //Porcentagem de perda 
+	system("cat perda.txt | grep transmitted | cut -d',' -f 3 | cut -d' ' -f 2 | cut -d'%' -f1 > perda1.txt");	   
+	fp = fopen("perda1.txt", "r"); // abre o arquivo perda1 para leitura
+	c = fgetc(fp); // variavel c recebe o primeiro caracter do arquivo
+
+	while(c! = EOF) //enquanto não for o final do arquivo
+	{
+		while(c! = '\n') // enquanto não terminar a linha do arquivo
+		{
+ 			tempo[i] = c; // tempo recebe c na posição de i
+			c = fgetc(fp); // pega o proximo caracter e armazena em c
+			i++; // incrementa
+		}
+	 	i = 0; // zera o i para o proximo valor ser armazenado em tempo
+		perda = atof(tempo);//time recebe o valor de tempo convertido para float		
+		c = fgetc(fp); //pega o proximo caracter e armazena em c
+    }
+        
+           fclose(fp); // Fecha o arquivo
+	   
+	   resul_perda=(10*perda)/100;
+	   m_perda += resul_perda;
+	   printf("A perda e:	%.0f\n", resul_perda);
+       
+       return resul_perda;
+}
+
+float func_jitter()
+{
+	fp=fopen("atraso_jitter","r");
+    //fgetc, ler caracter por caracter
+	 c=fgetc(fp);
+	// EOF final do arquivo
+	while(c! = EOF)
+    {
+		while(c!='\n') //enquanto não for o final da linha
+		{
+			tempo[i] = c;
+			i++;
+			c = fgetc(fp);
+		}
+		i = 0;
+		jitter2 = jitter1;	
+		jitter1 = atof(tempo);
+	   
+		if(jitter2!=0)
+		{     
+				if((jitter1-jitter2)<0)
+				{
+					//subtracao de jitte1 - jitter2 foi menor que 0, multiplica por -1
+					resul_jitter=resul_jitter+(((jitter1-jitter2)*-1));
+				} 
+				else
+				{
+					//se for maior 0 ele executa a linha abaixo
+					resul_jitter=resul_jitter+((jitter1-jitter2));
+				}
+		}
+		c=fgetc(fp); 
+		
+	}
+    
+    fclose(fp); //Fecha o arquivo
+	total_jitter= resul_jitter/2;
+	m_jitter+=total_jitter;
+	printf("O jitter e: %.3f\n", total_jitter);
+	
+	return total_jitter;
+}

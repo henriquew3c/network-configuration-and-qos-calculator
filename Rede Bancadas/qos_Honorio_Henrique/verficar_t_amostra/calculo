@@ -1,0 +1,25 @@
+--------------- Verificar Tamanho Amostra --------------------------
+
+
+TESTE 1
+--- 8.8.8.8 ping statistics ---
+1228 packets transmitted, 1222 received, 0% packet loss, time 16002ms
+rtt min/avg/max/mdev = 199.438/381.887/673.710/135.060 ms, pipe 54, ipg/ewma 13.041/537.084 ms
+
+TESTE 2
+--- 8.8.8.8 ping statistics ---
+1228 packets transmitted, 1218 received, 0% packet loss, time 15969ms
+rtt min/avg/max/mdev = 198.575/410.268/748.372/128.096 ms, pipe 59, ipg/ewma 13.014/213.443 ms
+
+TESTE 3
+--- 8.8.8.8 ping statistics ---
+1228 packets transmitted, 1218 received, 0% packet loss, time 17867ms
+rtt min/avg/max/mdev = 198.936/361.442/695.670/96.779 ms, pipe 49, ipg/ewma 14.562/381.263 ms
+
+**Cálculo
+
+dp = (135.060+128.096+96.779)/3 ≃ 119.978
+
+amostra = ((dp * 1.96)/erro)
+
+amostra = ((119.978 * 1,96)/0,2)² ≃ 1175 Repetições

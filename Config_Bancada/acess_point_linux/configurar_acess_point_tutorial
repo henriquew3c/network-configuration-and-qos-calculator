@@ -1,0 +1,60 @@
+***** configuração hostapd e dhcp ******
+***** Criar acess point LINUX ************
+
+Para que haja compatibilidade com os serviços será necessario um chipset adquado para esse fim chamado ATHEROS.
+
+comando para verificar existencia: 
+
+#dmesg | grep eth
+
+******** procedimentos para instalação HOSTAPD ************
+
+> apt-get install hostapd
+
+após instalado ele criará um diretório chamado:
+/etc/hostapd/hostapd.conf
+
+Vamos alterá-lo:
+Exemplo:
+
+*************************************************************************
+*	 interface: wlan <-- minha placa wireless			*
+*	 driver: nl80211 <-- driver necessário				*
+*	 SSID: nome_da_conexão						*
+*	 Hw_mode=g <-tipo de chipset que poderá usar minha conexão.	*
+*	 channel:7 <--Canal						*
+*									*
+*									*
+*************************************************************************
+
+Feito isso é necessário instalar e configurar o DHCP3
+
+*********** Procedimentos para instalação DHCP3 ****************
+
+> apt-get install dhcp3
+
+após instalado ele criará um diretório chamado:
+/etc/dhcp3/dhcpd.conf
+
+Vamos alterá-lo:
+Exemplo:
+
+*****************************************************************************************
+*											*
+*	ddns_update_style none;								*
+*	default_lease_time 600;								*
+*	max_lease_time 7200;								*
+*	log_facility local17;								*
+*											*	
+*	option domain_name_servers 8.8.8.8,4.2.2.2;					*
+*	subnet 192.168.2.0 netmask 255.255.255.0;					*
+*	{ 										*
+*	range 192.168.2.2 192.168.2.70;	//meu ap fornecera do ip 2 ao 70		*
+*	option routers 192.168.2.1; //endereço ip da minha placa wlan que fará o servico*
+*	option broadcast_address 192.168.2.255						*
+*	}										*		
+*											*
+*****************************************************************************************
+
+PRONTO! AGORA É SÓ STARTAR O SERVIÇO.
+> para startar use os comandos contigos no arquivo "Iniciar_acess_point.c".
